@@ -1,32 +1,47 @@
 import streamlit as st
-import xarray as xr
 import matplotlib.pyplot as plt
 import numpy as np
 
+st.set_page_config(page_title="ESG Air Pollution Dashboard", layout="centered")
+
+# Title
 st.title("Air Pollution Visualization Dashboard")
 
-# ---- User Inputs ----
-pollutant = st.selectbox("Select Pollutant", ["NO₂"])
-region = st.text_input("Enter Region (example: Delhi)")
-time_range = st.selectbox("Select Time Range", ["Daily", "Weekly", "Monthly"])
+st.markdown("### Select Parameters")
 
-st.write("Selected:")
-st.write("Pollutant:", pollutant)
-st.write("Region:", region)
-st.write("Time Range:", time_range)
+# Pollutant selection
+pollutant = st.selectbox(
+    "Select Pollutant",
+    ["NO₂"]
+)
 
-# ---- Button ----
+# Time selection
+time_range = st.selectbox(
+    "Select Time Range",
+    ["Last 24 hours", "Last 7 days", "Last 30 days"]
+)
+
+# Region selection
+region = st.selectbox(
+    "Select Region",
+    ["Delhi", "Mumbai", "Bangalore"]
+)
+
+# Button
 if st.button("Generate Visualization"):
-    st.subheader("Visualization Output")
 
-    # Dummy data for prototype
+    st.success(f"Showing {pollutant} levels for {region} ({time_range})")
+
+    # Dummy data for visualization
     x = np.arange(10)
-    y = np.random.rand(10)
+    y = np.random.randint(20, 100, size=10)
 
+    # Plot
     fig, ax = plt.subplots()
     ax.plot(x, y)
-    ax.set_title("NO₂ Concentration Trend")
     ax.set_xlabel("Time")
-    ax.set_ylabel("NO₂ Level")
+    ax.set_ylabel("NO₂ Concentration")
+    ax.set_title("NO₂ Pollution Levels")
 
     st.pyplot(fig)
+    
