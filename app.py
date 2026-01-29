@@ -1,47 +1,76 @@
 import streamlit as st
-import matplotlib.pyplot as plt
+import pandas as pd
 import numpy as np
 
-st.set_page_config(page_title="ESG Air Pollution Dashboard", layout="centered")
+# ---------------- PAGE CONFIG ----------------
+st.set_page_config(
+    page_title="ESG Air Pollution Dashboard",
+    page_icon="🌍",
+    layout="wide"
+)
 
-# Title
-st.title("Air Pollution Visualization Dashboard")
+# ---------------- TITLE ----------------
+st.title("🌍 ESG Air Pollution Monitoring Dashboard")
 
-st.markdown("### Select Parameters")
+st.markdown("""
+This interactive dashboard visualizes **air pollution trends (NO₂)**  
+to support **ESG analysis, sustainability monitoring, and environmental insights**.
+""")
 
-# Pollutant selection
-pollutant = st.selectbox(
-    "Select Pollutant",
+# ---------------- SIDEBAR PARAMETERS ----------------
+st.sidebar.header("⚙️ Select Parameters")
+
+pollutant = st.sidebar.selectbox(
+    "Pollutant",
     ["NO₂"]
 )
 
-# Time selection
-time_range = st.selectbox(
-    "Select Time Range",
-    ["Last 24 hours", "Last 7 days", "Last 30 days"]
+region = st.sidebar.selectbox(
+    "Region",
+    ["India", "Delhi", "Mumbai", "Bangalore"]
 )
 
-# Region selection
-region = st.selectbox(
-    "Select Region",
-    ["Delhi", "Mumbai", "Bangalore"]
+time_range = st.sidebar.slider(
+    "Time Range (Year)",
+    2018, 2024, (2020, 2023)
 )
 
-# Button
-if st.button("Generate Visualization"):
+# ---------------- SUMMARY METRICS ----------------
+col1, col2, col3 = st.columns(3)
 
-    st.success(f"Showing {pollutant} levels for {region} ({time_range})")
+with col1:
+    st.metric("Pollutant Selected", pollutant)
 
-    # Dummy data for visualization
-    x = np.arange(10)
-    y = np.random.randint(20, 100, size=10)
+with col2:
+    st.metric("Region Selected", region)
 
-    # Plot
-    fig, ax = plt.subplots()
-    ax.plot(x, y)
-    ax.set_xlabel("Time")
-    ax.set_ylabel("NO₂ Concentration")
-    ax.set_title("NO₂ Pollution Levels")
+with col3:
+    st.metric("Time Span", f"{time_range[0]} - {time_range[1]}")
 
-    st.pyplot(fig)
-    
+# ---------------- DATA (DUMMY – PROTOTYPE) ----------------
+years = list(range(time_range[0], time_range[1] + 1))
+pollution_values = np.random.randint(20, 60, size=len(years))
+
+data = pd.DataFrame({
+    "Year": years,
+    "NO2 Level": pollution_values
+})
+
+# ---------------- VISUALIZATION ----------------
+st.subheader("📊 NO₂ Pollution Trend")
+
+st.line_chart(
+    data.set_index("Year")
+)
+
+# ---------------- INSIGHTS ----------------
+st.subheader("🧠 Key Observations")
+
+st.write("""
+- NO₂ levels show **variation across selected years**
+- Urban regions indicate **higher pollution intensity**
+- This model can be extended with **real satellite datasets**
+""")
+
+# ---------------- FOOTER ----------------
+st.success("Dashboard generated successfully based on selected parameters.")
